@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 8.1 Start</title>
+    <style>
+        * { box-sizing: border-box; cursor: default; user-select: none; }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+
+        /* --- Windows 8.1 Start Screen Styling --- */
+        #start-screen {
+            background: linear-gradient(135deg, #1e4d2b 0%, #008a00 100%); /* Classic Win8 Teal/Green */
+            width: 100vw;
+            height: 100vh;
+            padding: 50px 80px;
+            display: block;
+        }
+
+        h2 {
+            color: white;
+            font-weight: 300;
+            font-size: 42px;
+            margin-bottom: 30px;
+        }
+
+        .tile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 120px);
+            grid-auto-rows: 120px;
+            gap: 10px;
+        }
+
+        .tile {
+            background-color: #2d89ef;
+            color: white;
+            padding: 10px;
+            display: flex;
+            align-items: flex-end;
+            font-size: 13px;
+            transition: transform 0.1s, outline 0.1s;
+            position: relative;
+        }
+
+        .tile:hover {
+            outline: 3px solid rgba(255,255,255,0.5);
+            transform: scale(1.02);
+        }
+
+        .tile:active {
+            transform: scale(0.95);
+        }
+
+        .tile.wide { grid-column: span 2; }
+        .tile.large { grid-column: span 2; grid-row: span 2; }
+        .tile.purple { background-color: #7e3878; }
+        .tile.orange { background-color: #da532c; }
+        .tile.green { background-color: #00a300; }
+
+        /* --- Windows 11 BSOD Styling --- */
+        #bsod {
+            display: none; /* Hidden by default */
+            background-color: #0078d7;
+            color: white;
+            width: 100vw;
+            height: 100vh;
+            padding: 10%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+        }
+
+        .sad-face { font-size: 100px; margin-bottom: 20px; }
+        .bsod-text { font-size: 24px; font-weight: 300; line-height: 1.4; max-width: 800px; }
+        #percentage { font-size: 24px; margin-top: 20px; }
+
+        .footer {
+            margin-top: 50px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .qr-placeholder {
+            width: 100px;
+            height: 100px;
+            background: white;
+            /* Mock QR pattern */
+            background-image: conic-gradient(from 90deg at 2px 2px, #0078d7 90deg, transparent 0);
+            background-size: 10px 10px;
+        }
+
+        .small-text { font-size: 12px; line-height: 1.5; opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen">
+        <h2>Start</h2>
+        <div class="tile-grid">
+            <div class="tile large" onclick="triggerBSOD()">Mail</div>
+            <div class="tile purple" onclick="triggerBSOD()">Photos</div>
+            <div class="tile" onclick="triggerBSOD()">Store</div>
+            <div class="tile wide orange" onclick="triggerBSOD()">Desktop</div>
+            <div class="tile green" onclick="triggerBSOD()">Xbox</div>
+            <div class="tile" onclick="triggerBSOD()">Weather</div>
+            <div class="tile purple wide" onclick="triggerBSOD()">Calendar</div>
+            <div class="tile" onclick="triggerBSOD()">Maps</div>
+        </div>
+    </div>
+
+    <div id="bsod">
+        <div class="sad-face">:(</div>
+        <div class="bsod-text">
+            Your device ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.
+        </div>
+        <div id="percentage">0% complete</div>
+        
+        <div class="footer">
+            <div class="qr-placeholder"></div>
+            <div class="small-text">
+                For more information about this issue and possible fixes, visit https://www.windows.com/stopcode<br><br>
+                If you call a support person, give them this info:<br>
+                Stop Code: CRITICAL_PROCESS_DIED
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function triggerBSOD() {
+            // Hide Start, Show BSOD
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('bsod').style.display = 'block';
+            document.body.style.cursor = 'none'; // Hide cursor like a real BSOD
+
+            let count = 0;
+            const progress = document.getElementById('percentage');
+
+            const interval = setInterval(() => {
+                if (count < 66) {
+                    // Randomize increments to make it look "natural"
+                    count += Math.floor(Math.random() * 5) + 1;
+                    if (count > 66) count = 66; 
+                    progress.innerText = count + "% complete";
+                } else {
+                    // Stay at 66 forever
+                    progress.innerText = "66% complete";
+                    clearInterval(interval);
+                }
+            }, 300);
+        }
+
+        // Prevent right-click to keep the illusion
+        document.addEventListener('contextmenu', event => event.preventDefault());
+    </script>
+</body>
+</html>
